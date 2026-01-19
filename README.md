@@ -27,6 +27,11 @@ Now powered by the **`tb`** command-line manager.
     - *Note:* `spotDL` installation involves compiling heavy dependencies. It may take 5-15 minutes. A timeout protection is in place to prevent infinite hangs.
 - **Termux Whisper**: Installs [termux-whisper](https://github.com/itsmuaaz/termux-whisper) for offline, privacy-focused AI speech transcription on your phone.
 
+### 💻 Web Terminal
+- **Drag-and-Drop Uploads**: Drag files from your desktop directly into the web terminal to upload them (saved to `~/termux-uploads`).
+- **Easy Downloads**: Use `dl <filename>` to instantly generate a download link.
+- **Mouse Support**: Toggle mouse capture with `Prefix + m` to switch between Tmux scrolling and native browser selection.
+
 ### 📱 Mobile Optimizations (Portrait Mode)
 - **Starship (Portrait Config)**: Optional 2-line prompt optimized for narrow phone screens.
 - **Micro Editor**: Touch-friendly text editor with mouse/touch support enabled by default.
@@ -103,7 +108,8 @@ To make mobile usage easier, the following shortcuts are included. Type **`tb`**
 | **`tb`** | *(Wrapper)* | **Display help & manage environment** |
 | **`tb update`** | `...` | Full System Update (System + Scripts) |
 | **`tb sync`** | `...` | Sync Bootstrap scripts with GitHub only |
-| **`tb web`** | `...` | Web Terminal (Use --session for tmux) |
+| **`tb web`** | `...` | Web Terminal (Drag-and-Drop Uploads) |
+| **`dl`** | `python...` | **Serve file for download** |
 | **`video`** | `yt-dlp ...` | Download video to `/sdcard/Download/Termux` |
 | **`music`** | `spotdl ...` | Smart download (Lyrics, LRC, Metadata) |
 | **`whisper`** | `termux-whisper` | Launch the AI Transcriber |
