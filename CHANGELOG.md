@@ -2,6 +2,11 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v2.9.12] - 2026-01-05
+### Added
+- **Drag-and-Drop Uploads:** Enabled file uploads in `tb web`. Files dragged onto the terminal are saved to `~/termux-uploads`.
+- **Quick Download:** Added `dl <file>` command to instantly serve a file and generate a download link.
+
 ## [v2.9.11] - 2026-01-05
 ### Fixed
 - **Paste Stability:** Increased `ttyd` WebSocket ping interval to 60s to prevent disconnects during large paste operations.

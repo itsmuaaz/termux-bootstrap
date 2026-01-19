@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v2.9.11
+# Termux Bootstrap CLI (tb) v2.9.12
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -297,12 +297,21 @@ cmd_web() {
     export TERM=xterm-256color
     export TB_WEB_MODE=1
 
-    # TTYD Options
-    local TTYD_OPTS="-P 60 -t rendererType=canvas,cursorBlink=true,disableStdin=false"
+    # Upload Configuration
+    local UPLOAD_DIR="$HOME/termux-uploads"
+    mkdir -p "$UPLOAD_DIR"
+    local ORIG_DIR=$(pwd)
+    echo -e "${YELLOW}[i] Drag-and-drop uploads will land in: $UPLOAD_DIR${NC}"
+
+    # TTYD Options (Enable Uploads)
+    local TTYD_OPTS="-u $(id -u):$(id -g) -P 60 -t rendererType=canvas,cursorBlink=true,disableStdin=false"
+
+    # Switch to Upload Dir so ttyd writes files there
+    cd "$UPLOAD_DIR" || exit 1
 
     if [ "$MODE" == "simple" ]; then
         # Simple Mode: Direct Shell
-        ttyd --writable -p $PORT -c "tb:$PASSWORD" $TTYD_OPTS "$FISH_BIN"
+        ttyd --writable -p $PORT -c "tb:$PASSWORD" $TTYD_OPTS "$BASH_BIN" -c "cd '$ORIG_DIR'; exec $FISH_BIN"
     else
         # Persistent Modes
         local SESSION_NAME=""
@@ -313,7 +322,7 @@ cmd_web() {
         
         # Create session if not exists
         if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
-            "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
+            "$TMUX_BIN" new-session -d -s "$SESSION_NAME" -c "$ORIG_DIR" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
         fi
 
         # Configure Settings (Always Apply)
@@ -353,6 +362,7 @@ cmd_help() {
     echo -e "  ${CYAN}in${NC}      : pkg install"
     echo -e "  ${CYAN}open${NC}    : Open file in Android app"
     echo -e "  ${CYAN}serve${NC}   : Start web server in current dir"
+    echo -e "  ${CYAN}dl${NC}      : Serve specific file for download"
     echo -e "  ${CYAN}copy${NC}    : Pipe to Android clipboard"
     echo -e "  ${CYAN}paste${NC}   : Paste from Android clipboard"
     echo -e "  ${CYAN}c${NC}       : Clear screen"

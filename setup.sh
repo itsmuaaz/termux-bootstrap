@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap (tb) v2.9.11
+# Termux Bootstrap (tb) v2.9.12
 # A modular, safe, and mobile-optimized setup script for Termux.
 # ==============================================================================
 
@@ -100,7 +100,7 @@ show_menu() {
     while true; do
         clear
         echo -e "${PURPLE}============================================${NC}"
-        echo "       TERMUX BOOTSTRAP (tb) v2.9.11         "
+        echo "       TERMUX BOOTSTRAP (tb) v2.9.12         "
         echo -e "${PURPLE}============================================${NC}"
         echo -e "Select components to install (Toggle with numbers):"
         echo ""
@@ -495,6 +495,23 @@ alias up='pkg update && pkg upgrade'
 alias in='pkg install'
 alias open='termux-open'
 alias serve='python -m http.server'
+
+# Quick Download
+function dl --description "Serve a file for download"
+    if test (count $argv) -eq 0
+        echo "Usage: dl <file>"
+        return 1
+    end
+    set file $argv[1]
+    if not test -f "$file"
+        echo "Error: File '$file' not found."
+        return 1
+    end
+    set ip (ifconfig 2>/dev/null | grep -A 1 'wlan0' | grep 'inet ' | awk '{print $2}' | cut -d/ -f1)
+    if test -z "$ip"; set ip "localhost"; end
+    echo "🔗 Download: http://$ip:8000/$file"
+    python -m http.server 8000
+end
 
 # Clipboard Integration (Requires Termux:API app)
 if command -q termux-clipboard-get
