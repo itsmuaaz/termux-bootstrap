@@ -2,6 +2,11 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v2.9.9] - 2026-01-05
+### Removed
+- **Dashboard Mode:** Removed the `--dashboard` feature and its associated logic to simplify the codebase. `tb web --session` is now the standard for persistence.
+- **Yazi/Sixel Integration:** Removed Sixel graphics passthrough and Yazi IPC integration due to compatibility issues.
+
 ## [v2.9.8] - 2026-01-05
 ### Fixed
 - **Sixel Initialization:** Moved `tmux` configuration (passthrough enablement) to execute immediately after session creation. This fixes a race condition where `yazi` would launch before graphics support was active, resulting in broken image previews.

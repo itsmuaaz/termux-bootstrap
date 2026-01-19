@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v2.9.8
+# Termux Bootstrap CLI (tb) v2.9.9
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -224,13 +224,10 @@ cmd_web() {
     local MODE="simple"
 
     # Argument Parsing
-    # Priority: Dashboard > Session > Simple
     for arg in "$@"; do
-        if [ "$arg" == "--dashboard" ]; then
-            MODE="dashboard"
-        elif [ "$arg" == "--session" ] && [ "$MODE" != "dashboard" ]; then
+        if [ "$arg" == "--session" ]; then
             MODE="session"
-        elif [ "$arg" == "--simple" ] && [ "$MODE" != "dashboard" ] && [ "$MODE" != "session" ]; then
+        elif [ "$arg" == "--simple" ] && [ "$MODE" != "session" ]; then
             MODE="simple"
         elif [[ "$arg" =~ ^[0-9]+$ ]]; then
             PORT=$arg
@@ -261,33 +258,7 @@ cmd_web() {
         fi
     fi
 
-    # 2. Dashboard Components (Optional)
-    local MONITOR_CMD="top"
-    local FILE_CMD="ls -l" # Fallback
-    
-    if [ "$MODE" == "dashboard" ]; then
-        # Try btop -> htop
-        if command -v btop &> /dev/null; then
-            MONITOR_CMD="btop"
-        elif pkg install -y btop &>/dev/null; then
-            MONITOR_CMD="btop"
-        elif command -v htop &> /dev/null; then
-            MONITOR_CMD="htop"
-        elif pkg install -y htop &>/dev/null; then
-            MONITOR_CMD="htop"
-        fi
-        
-        # Try yazi -> ranger -> nnn -> fish
-        if command -v yazi &> /dev/null; then
-            FILE_CMD="yazi"
-        elif pkg install -y yazi &>/dev/null; then
-            FILE_CMD="yazi"
-        elif pkg install -y ranger &>/dev/null; then
-            FILE_CMD="ranger"
-        else
-            FILE_CMD="$FISH_BIN"
-        fi
-    fi
+
 
     # 3. Wake Lock
     if command -v termux-wake-lock &> /dev/null; then
@@ -336,93 +307,21 @@ cmd_web() {
         # Persistent Modes
         local SESSION_NAME=""
         
-        if [ "$MODE" == "dashboard" ]; then
-            SESSION_NAME="tb_dashboard_$PORT"
-            echo -e "${YELLOW}[i] Dashboard Session: $SESSION_NAME${NC}"
-            
-            # Configure Yazi Keybindings for Tmux Integration
-            if [[ "$FILE_CMD" == "yazi" ]]; then
-                local YAZI_CONF_DIR="$HOME/.config/yazi"
-                local YAZI_KEYMAP="$YAZI_CONF_DIR/keymap.toml"
-                mkdir -p "$YAZI_CONF_DIR"
-                
-                # Check/Create Keymap
-                if [ ! -f "$YAZI_KEYMAP" ] || ! grep -q "tmux send-keys" "$YAZI_KEYMAP"; then
-                     echo -e "${BLUE}[i] Configuring Yazi for Tmux integration...${NC}"
-                     # If file exists, ensure newline before appending
-                     [ -f "$YAZI_KEYMAP" ] && echo "" >> "$YAZI_KEYMAP"
-                     
-                     cat <<EOF >> "$YAZI_KEYMAP"
-# --- Termux Bootstrap Integration ---
-[[manager.prepend_keymap]]
-on   = [ "<C-d>" ]
-run  = 'shell --block --confirm "tmux send-keys -t .+ cd \"\$1\" Enter"'
-desc = "Sync adjacent pane to dir"
-
-[[manager.prepend_keymap]]
-on   = [ "o" ]
-run  = 'shell --block --confirm "tmux send-keys -t .+ micro \"\$1\" Enter"'
-desc = "Open in adjacent pane"
-EOF
-                fi
-            fi
-            
-            # Create Dashboard if not exists
-            if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
-                # Create session (detached)
-                "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
-                
-                # Configure Settings (Early)
-                "$TMUX_BIN" set-option -t "$SESSION_NAME" allow-passthrough on 2>/dev/null
-                "$TMUX_BIN" set-option -t "$SESSION_NAME" update-environment "TERM TERM_PROGRAM" 2>/dev/null
-                
-                # Split Layout
-                # Split vertically (Main / Bottom) - Bottom is 30%
-                "$TMUX_BIN" split-window -t "$SESSION_NAME" -v -p 30
-                # Split bottom pane horizontally (Monitor / FileManager)
-                "$TMUX_BIN" split-window -t "${SESSION_NAME}:0.1" -h
-                
-                # Send Commands to Panes
-                "$TMUX_BIN" send-keys -t "${SESSION_NAME}:0.1" "$MONITOR_CMD" C-m
-                "$TMUX_BIN" send-keys -t "${SESSION_NAME}:0.2" "$FILE_CMD" C-m
-                
-                # Focus Main Shell
-                "$TMUX_BIN" select-pane -t "${SESSION_NAME}:0.0"
-            fi
-
-            # Configure Settings (Always Apply)
-            "$TMUX_BIN" set -g mouse on 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" allow-passthrough on 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" update-environment "TERM TERM_PROGRAM" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-position bottom 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=magenta,bold] TB Dashboard #[default]" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p " 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right-length 80 2>/dev/null
-
-        else
-            # Standard Session
-            SESSION_NAME="tb_session_$PORT"
-            echo -e "${YELLOW}[i] Session: $SESSION_NAME${NC}"
-            
-            # Create session if not exists
-            if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
-                "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
-                
-                # Configure Settings (Early)
-                "$TMUX_BIN" set-option -t "$SESSION_NAME" allow-passthrough on 2>/dev/null
-                "$TMUX_BIN" set-option -t "$SESSION_NAME" update-environment "TERM TERM_PROGRAM" 2>/dev/null
-            fi
-
-            # Configure Settings (Always Apply)
-            "$TMUX_BIN" set -g mouse on 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" allow-passthrough on 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" update-environment "TERM TERM_PROGRAM" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p " 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right-length 80 2>/dev/null
+        # Persistent Mode (Standard Session)
+        SESSION_NAME="tb_session_$PORT"
+        echo -e "${YELLOW}[i] Session: $SESSION_NAME${NC}"
+        
+        # Create session if not exists
+        if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
+            "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
         fi
+
+        # Configure Settings (Always Apply)
+        "$TMUX_BIN" set -g mouse on 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p " 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right-length 80 2>/dev/null
 
         # Run ttyd attaching to the specific session
         ttyd --writable -p $PORT -c "tb:$PASSWORD" $TTYD_OPTS "$TMUX_BIN" attach-session -t "$SESSION_NAME"
@@ -456,7 +355,7 @@ cmd_help() {
     echo -e "  ${CYAN}c${NC}       : Clear screen"
     
     echo -e "\n${GREEN}[CLI Manager]${NC}"
-    echo -e "  ${CYAN}tb web${NC}    : Web Terminal (--dashboard, --session)"
+    echo -e "  ${CYAN}tb web${NC}    : Web Terminal (--session)"
     echo -e "  ${CYAN}tb sync${NC}   : Sync Bootstrap scripts only"
     echo -e "  ${CYAN}tb update${NC} : Full System Update (Pkg, Pip, Npm, etc)"
     echo -e "  ${CYAN}tb theme${NC}  : Change terminal color scheme"
