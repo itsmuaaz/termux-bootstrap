@@ -2,6 +2,12 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v2.9.10] - 2026-01-05
+### Fixed
+- **Web Terminal Copying:** Enabled `tmux` OSC 52 clipboard integration. Text copied via Tmux selection now syncs to the browser clipboard.
+- **Mouse Control:** Added `Prefix + m` binding to toggle mouse mode. This allows temporarily disabling mouse capture to use native browser selection.
+- **Stability:** Increased Tmux history limit to prevent buffer issues.
+
 ## [v2.9.9] - 2026-01-05
 ### Removed
 - **Dashboard Mode:** Removed the `--dashboard` feature and its associated logic to simplify the codebase. `tb web --session` is now the standard for persistence.

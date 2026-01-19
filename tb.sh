@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v2.9.9
+# Termux Bootstrap CLI (tb) v2.9.10
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -318,6 +318,9 @@ cmd_web() {
 
         # Configure Settings (Always Apply)
         "$TMUX_BIN" set -g mouse on 2>/dev/null
+        "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
+        "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+        "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p " 2>/dev/null
