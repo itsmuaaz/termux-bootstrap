@@ -2,6 +2,11 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v2.9.11] - 2026-01-05
+### Fixed
+- **Paste Stability:** Increased `ttyd` WebSocket ping interval to 60s to prevent disconnects during large paste operations.
+- **Status Bar:** Added mouse toggle shortcut hint (`^B m`) to the persistent session status bar.
+
 ## [v2.9.10] - 2026-01-05
 ### Fixed
 - **Web Terminal Copying:** Enabled `tmux` OSC 52 clipboard integration. Text copied via Tmux selection now syncs to the browser clipboard.

@@ -4,7 +4,7 @@
 **Role:** Automated Bootstrap/Setup Manager for Android Termux.
 
 ## 🟢 Current Status
-*   **Version:** v2.9.10
+*   **Version:** v2.9.11
 *   **Phase:** Connectivity
 *   **Focus:** Stability & UX Polishing.
 

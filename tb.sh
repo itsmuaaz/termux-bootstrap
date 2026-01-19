@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v2.9.10
+# Termux Bootstrap CLI (tb) v2.9.11
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -298,7 +298,7 @@ cmd_web() {
     export TB_WEB_MODE=1
 
     # TTYD Options
-    local TTYD_OPTS="-t rendererType=canvas,cursorBlink=true,disableStdin=false"
+    local TTYD_OPTS="-P 60 -t rendererType=canvas,cursorBlink=true,disableStdin=false"
 
     if [ "$MODE" == "simple" ]; then
         # Simple Mode: Direct Shell
@@ -323,7 +323,7 @@ cmd_web() {
         "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p " 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right-length 80 2>/dev/null
 
         # Run ttyd attaching to the specific session
