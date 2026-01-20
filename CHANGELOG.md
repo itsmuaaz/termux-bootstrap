@@ -2,6 +2,10 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v2.9.13] - 2026-01-05
+### Fixed
+- **Stability:** Reverted "Drag-and-Drop Uploads" feature. The required `-u` flag triggers a `SIGSYS` crash on Termux due to restricted system calls.
+
 ## [v2.9.12] - 2026-01-05
 ### Added
 - **Drag-and-Drop Uploads:** Enabled file uploads in `tb web`. Files dragged onto the terminal are saved to `~/termux-uploads`.

@@ -1,4 +1,4 @@
-# Termux Bootstrap (`tb`) v2.9.12
+# Termux Bootstrap (`tb`) v2.9.13
 
 A modular, safe, and mobile-optimized bootstrap script and CLI manager for your Termux environment. Turn a fresh Termux install into a powerful development environment in minutes.
 
@@ -28,7 +28,6 @@ Now powered by the **`tb`** command-line manager.
 - **Termux Whisper**: Installs [termux-whisper](https://github.com/itsmuaaz/termux-whisper) for offline, privacy-focused AI speech transcription on your phone.
 
 ### 💻 Web Terminal
-- **Drag-and-Drop Uploads**: Drag files from your desktop directly into the web terminal to upload them (saved to `~/termux-uploads`).
 - **Easy Downloads**: Use `dl <filename>` to instantly generate a download link.
 - **Mouse Support**: Toggle mouse capture with `Prefix + m` to switch between Tmux scrolling and native browser selection.
 
@@ -108,7 +107,7 @@ To make mobile usage easier, the following shortcuts are included. Type **`tb`**
 | **`tb`** | *(Wrapper)* | **Display help & manage environment** |
 | **`tb update`** | `...` | Full System Update (System + Scripts) |
 | **`tb sync`** | `...` | Sync Bootstrap scripts with GitHub only |
-| **`tb web`** | `...` | Web Terminal (Drag-and-Drop Uploads) |
+| **`tb web`** | `...` | Web Terminal (--session) |
 | **`dl`** | `python...` | **Serve file for download** |
 | **`video`** | `yt-dlp ...` | Download video to `/sdcard/Download/Termux` |
 | **`music`** | `spotdl ...` | Smart download (Lyrics, LRC, Metadata) |
