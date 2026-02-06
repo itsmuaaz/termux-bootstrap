@@ -2,6 +2,17 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v3.0.0] - 2026-01-05
+### Major Changes: Session Architecture
+- **Decoupled Workflow:** Separated Tmux sessions from Web Terminals. You can now start a session locally (`tb session`) and view it on the web later (`tb web`).
+- **Named Sessions:** Commands now accept a session name (e.g., `tb web backend`), allowing multiple project workspaces.
+- **Auto-Port:** `tb web` automatically finds free ports (8080, 8081...) to prevent conflicts.
+
+### Added
+- **`tb session [name]`:** Start/Resume a local persistent session.
+- **`tb list`:** Show active sessions.
+- **`tb web [name]`:** Start a web viewer for a specific session.
+
 ## [v2.9.13] - 2026-01-05
 ### Fixed
 - **Stability:** Reverted "Drag-and-Drop Uploads" feature. The required `-u` flag triggers a `SIGSYS` crash on Termux due to restricted system calls.

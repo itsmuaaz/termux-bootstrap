@@ -1,4 +1,4 @@
-# Termux Bootstrap (`tb`) v2.9.13
+# Termux Bootstrap (`tb`) v3.0.0
 
 A modular, safe, and mobile-optimized bootstrap script and CLI manager for your Termux environment. Turn a fresh Termux install into a powerful development environment in minutes.
 
@@ -107,7 +107,9 @@ To make mobile usage easier, the following shortcuts are included. Type **`tb`**
 | **`tb`** | *(Wrapper)* | **Display help & manage environment** |
 | **`tb update`** | `...` | Full System Update (System + Scripts) |
 | **`tb sync`** | `...` | Sync Bootstrap scripts with GitHub only |
-| **`tb web`** | `...` | Web Terminal (--session) |
+| **`tb web`** | `...` | Start Web Viewer (`[name]`) |
+| **`tb session`**| `...` | Start Local Session (`[name]`) |
+| **`tb list`** | `tmux ls` | List active sessions |
 | **`dl`** | `python...` | **Serve file for download** |
 | **`video`** | `yt-dlp ...` | Download video to `/sdcard/Download/Termux` |
 | **`music`** | `spotdl ...` | Smart download (Lyrics, LRC, Metadata) |

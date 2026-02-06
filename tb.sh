@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v2.9.13
+# Termux Bootstrap CLI (tb) v3.0.0
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -219,19 +219,87 @@ cmd_update() {
     echo -e "${GREEN}[OK] Full System Update Complete!${NC}"
 }
 
+cmd_list() {
+    local TMUX_BIN=$(command -v tmux)
+    if [ -z "$TMUX_BIN" ]; then
+        echo -e "${RED}[ERR] Tmux is not installed.${NC}"
+        return 1
+    fi
+
+    if ! "$TMUX_BIN" ls &> /dev/null; then
+        echo -e "${YELLOW}[i] No active sessions.${NC}"
+        return 0
+    fi
+    
+    echo -e "${GREEN}Active Sessions:${NC}"
+    "$TMUX_BIN" list-sessions -F "  - ${CYAN}#{session_name}${NC}: #{?session_attached,Attached,Detached} (#{session_windows} windows)"
+}
+
+cmd_session() {
+    local SESSION_NAME="main"
+    if [ -n "$1" ]; then SESSION_NAME="$1"; fi
+    
+    local TMUX_BIN=$(command -v tmux)
+    local FISH_BIN=$(command -v fish)
+    local BASH_BIN=$(command -v bash)
+
+    if [ -z "$TMUX_BIN" ]; then
+        echo -e "${RED}[ERR] Tmux is not installed.${NC}"
+        return 1
+    fi
+
+    # Create session if not exists
+    if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
+        echo -e "${GREEN}[+] Creating session: ${CYAN}$SESSION_NAME${NC}"
+        "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
+        
+        # Configure Settings
+        "$TMUX_BIN" set -g mouse on 2>/dev/null
+        "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
+        "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+        "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
+    else
+        echo -e "${GREEN}[+] Resuming session: ${CYAN}$SESSION_NAME${NC}"
+    fi
+
+    # Attach
+    "$TMUX_BIN" attach -t "$SESSION_NAME"
+}
+
 cmd_web() {
     local PORT=8080
-    local MODE="simple"
+    local MODE="session"
+    local SESSION_NAME="main"
 
     # Argument Parsing
-    for arg in "$@"; do
-        if [ "$arg" == "--session" ]; then
-            MODE="session"
-        elif [ "$arg" == "--simple" ] && [ "$MODE" != "session" ]; then
-            MODE="simple"
-        elif [[ "$arg" =~ ^[0-9]+$ ]]; then
-            PORT=$arg
-        fi
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --simple)
+                MODE="simple"
+                shift
+                ;;
+            --port)
+                PORT="$2"
+                shift 2
+                ;;
+            --session) # Legacy
+                shift
+                ;;
+            [0-9]*)
+                PORT="$1"
+                shift
+                ;;
+            -*)
+                shift
+                ;;
+            *)
+                SESSION_NAME="$1"
+                shift
+                ;;
+        esac
     done
 
     # 1. Critical Dependency Check
@@ -297,33 +365,37 @@ cmd_web() {
     export TERM=xterm-256color
     export TB_WEB_MODE=1
 
+    # Auto-find Port
+    while timeout 0.1 bash -c "cat < /dev/null > /dev/tcp/localhost/$PORT" 2>/dev/null; do
+        PORT=$((PORT+1))
+    done
+
     # TTYD Options
     local TTYD_OPTS="-P 60 -t rendererType=canvas,cursorBlink=true,disableStdin=false"
 
     if [ "$MODE" == "simple" ]; then
-        # Simple Mode: Direct Shell
+        # Simple Mode
         ttyd --writable -p $PORT -c "tb:$PASSWORD" $TTYD_OPTS "$FISH_BIN"
     else
-        # Persistent Mode (Standard Session)
-        SESSION_NAME="tb_session_$PORT"
-        echo -e "${YELLOW}[i] Session: $SESSION_NAME${NC}"
+        # Persistent Mode (Named Session)
+        echo -e "${YELLOW}[i] Target Session: ${CYAN}$SESSION_NAME${NC}"
         
-        # Create session if not exists
+        # Ensure session exists (Headless creation)
         if ! "$TMUX_BIN" has-session -t "$SESSION_NAME" 2>/dev/null; then
+            echo -e "${GREEN}[+] Creating background session...${NC}"
             "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
+            
+            # Configure Settings
+            "$TMUX_BIN" set -g mouse on 2>/dev/null
+            "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
+            "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+            "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
+            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
+            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
+            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
         fi
 
-        # Configure Settings (Always Apply)
-        "$TMUX_BIN" set -g mouse on 2>/dev/null
-        "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
-        "$TMUX_BIN" bind m set -g mouse 2>/dev/null
-        "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Close: ^B x #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right-length 80 2>/dev/null
-
-        # Run ttyd attaching to the specific session
+        # Run ttyd
         ttyd --writable -p $PORT -c "tb:$PASSWORD" $TTYD_OPTS "$TMUX_BIN" attach-session -t "$SESSION_NAME"
     fi
 }
@@ -356,7 +428,9 @@ cmd_help() {
     echo -e "  ${CYAN}c${NC}       : Clear screen"
     
     echo -e "\n${GREEN}[CLI Manager]${NC}"
-    echo -e "  ${CYAN}tb web${NC}    : Web Terminal (--session)"
+    echo -e "  ${CYAN}tb web${NC}    : Start Web Viewer (default: 'main')"
+    echo -e "  ${CYAN}tb session${NC}: Start Local Session (default: 'main')"
+    echo -e "  ${CYAN}tb list${NC}   : List Active Sessions"
     echo -e "  ${CYAN}tb sync${NC}   : Sync Bootstrap scripts only"
     echo -e "  ${CYAN}tb update${NC} : Full System Update (Pkg, Pip, Npm, etc)"
     echo -e "  ${CYAN}tb theme${NC}  : Change terminal color scheme"
@@ -376,6 +450,13 @@ case "$1" in
         ;;
     web)
         cmd_web "$@"
+        ;;
+    session)
+        shift
+        cmd_session "$@"
+        ;;
+    list)
+        cmd_list
         ;;
     theme)
         cmd_theme
