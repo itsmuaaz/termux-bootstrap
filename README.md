@@ -27,9 +27,15 @@ Now powered by the **`tb`** command-line manager.
     - *Note:* `spotDL` installation involves compiling heavy dependencies. It may take 5-15 minutes. A timeout protection is in place to prevent infinite hangs.
 - **Termux Whisper**: Installs [termux-whisper](https://github.com/itsmuaaz/termux-whisper) for offline, privacy-focused AI speech transcription on your phone.
 
-### 💻 Web Terminal
-- **Easy Downloads**: Use `dl <filename>` to instantly generate a download link.
-- **Mouse Support**: Toggle mouse capture with `Prefix + m` to switch between Tmux scrolling and native browser selection.
+### 💻 Session & Workspace Management (v3.0)
+**Termux Bootstrap** now acts as a full workspace manager, decoupling your sessions from your interface.
+- **Persistent Workspaces**: Start a named session locally (`tb session my-project`) and it stays alive in the background, even if you close the terminal app.
+- **Web Portal**: Instantly expose any session to your browser with `tb web my-project`. Work from your laptop on a big screen, then pick up exactly where you left off on your phone.
+- **Multi-Project**: Run multiple isolated environments simultaneously. `tb web` automatically finds free ports (8080, 8081, etc.).
+- **Smart Utilities**:
+    - **Downloads**: Type `dl <file>` to generate a direct download link.
+    - **Mouse Toggle**: Press `Ctrl+b m` to toggle mouse capture (useful for browser text selection).
+    - **Clipboard**: Native clipboard sync via OSC 52.
 
 ### 📱 Mobile Optimizations (Portrait Mode)
 - **Starship (Portrait Config)**: Optional 2-line prompt optimized for narrow phone screens.
