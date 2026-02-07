@@ -1,4 +1,4 @@
-# Termux Bootstrap (`tb`) v3.0.0
+# Termux Bootstrap (`tb`) v3.0.1
 
 A modular, safe, and mobile-optimized bootstrap script and CLI manager for your Termux environment. Turn a fresh Termux install into a powerful development environment in minutes.
 

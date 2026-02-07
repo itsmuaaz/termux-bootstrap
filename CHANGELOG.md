@@ -2,6 +2,10 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v3.0.1] - 2026-01-05
+### Fixed
+- **tb list:** Corrected display issue where raw ANSI escape codes were printed. Switched to Tmux native format strings for consistent coloring.
+
 ## [v3.0.0] - 2026-01-05
 ### Major Changes: Session Architecture
 - **Decoupled Workflow:** Separated Tmux sessions from Web Terminals. You can now start a session locally (`tb session`) and view it on the web later (`tb web`).

@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v3.0.0
+# Termux Bootstrap CLI (tb) v3.0.1
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -232,7 +232,7 @@ cmd_list() {
     fi
     
     echo -e "${GREEN}Active Sessions:${NC}"
-    "$TMUX_BIN" list-sessions -F "  - ${CYAN}#{session_name}${NC}: #{?session_attached,Attached,Detached} (#{session_windows} windows)"
+    "$TMUX_BIN" list-sessions -F "  - #[fg=cyan]#{session_name}#[default]: #{?session_attached,Attached,Detached} (#{session_windows} windows)"
 }
 
 cmd_session() {
