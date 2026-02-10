@@ -2,6 +2,11 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v3.0.3] - 2026-01-05
+### Improved
+- **Mouse Escape Hatch:** Tapping the Tmux Status Bar now disables mouse mode (if ON), allowing you to quickly access the Android keyboard.
+- **Consistency:** Applied F1 toggle and status bar indicators to all session types.
+
 ## [v3.0.2] - 2026-01-05
 ### Improved
 - **Mouse UX:** Added `F1` (VolumeUp+1) key binding to toggle Mouse Mode. Added visual status `[M:ON/OFF]` to the Tmux status bar.

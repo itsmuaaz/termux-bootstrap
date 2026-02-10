@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v3.0.2
+# Termux Bootstrap CLI (tb) v3.0.3
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -262,6 +262,9 @@ cmd_session() {
         "$TMUX_BIN" bind -n F1 set -g mouse 2>/dev/null
         "$TMUX_BIN" bind m set -g mouse 2>/dev/null
         
+        # Escape Hatch: Click Status Bar to Disable Mouse
+        "$TMUX_BIN" bind -n MouseDown1Status set -g mouse off \; display "Mouse: OFF (Keyboard Enabled)" 2>/dev/null
+        
         # Status Bar
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
@@ -398,6 +401,9 @@ cmd_web() {
             # Toggle: F1 (VolUp+1) or Prefix+m
             "$TMUX_BIN" bind -n F1 set -g mouse 2>/dev/null
             "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+            
+            # Escape Hatch: Click Status Bar to Disable Mouse
+            "$TMUX_BIN" bind -n MouseDown1Status set -g mouse off \; display "Mouse: OFF (Keyboard Enabled)" 2>/dev/null
             
             # Status Bar
             "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
