@@ -2,6 +2,11 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v3.0.2] - 2026-01-05
+### Improved
+- **Mouse UX:** Added `F1` (VolumeUp+1) key binding to toggle Mouse Mode. Added visual status `[M:ON/OFF]` to the Tmux status bar.
+- **Local Sessions:** `tb session` now defaults to `Mouse OFF` to allow immediate typing. Use `F1` to enable mouse for scrolling.
+
 ## [v3.0.1] - 2026-01-05
 ### Fixed
 - **tb list:** Corrected display issue where raw ANSI escape codes were printed. Switched to Tmux native format strings for consistent coloring.

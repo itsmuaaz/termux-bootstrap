@@ -1,4 +1,4 @@
-# Termux Bootstrap (`tb`) v3.0.1
+# Termux Bootstrap (`tb`) v3.0.2
 
 A modular, safe, and mobile-optimized bootstrap script and CLI manager for your Termux environment. Turn a fresh Termux install into a powerful development environment in minutes.
 
@@ -34,7 +34,7 @@ Now powered by the **`tb`** command-line manager.
 - **Multi-Project**: Run multiple isolated environments simultaneously. `tb web` automatically finds free ports (8080, 8081, etc.).
 - **Smart Utilities**:
     - **Downloads**: Type `dl <file>` to generate a direct download link.
-    - **Mouse Toggle**: Press `Ctrl+b m` to toggle mouse capture (useful for browser text selection).
+    - **Mouse Toggle**: Press **`F1`** (VolumeUp+1) or `Ctrl+b m` to toggle mouse. Check the `[M:ON]` indicator in the status bar.
     - **Clipboard**: Native clipboard sync via OSC 52.
 
 ### 📱 Mobile Optimizations (Portrait Mode)

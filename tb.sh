@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# Termux Bootstrap CLI (tb) v3.0.1
+# Termux Bootstrap CLI (tb) v3.0.2
 # The Swiss Army Knife for your Termux Environment.
 # ==============================================================================
 
@@ -253,14 +253,19 @@ cmd_session() {
         echo -e "${GREEN}[+] Creating session: ${CYAN}$SESSION_NAME${NC}"
         "$TMUX_BIN" new-session -d -s "$SESSION_NAME" "$BASH_BIN -c 'export TERM=xterm-256color TB_WEB_MODE=1; exec $FISH_BIN'"
         
-        # Configure Settings
-        "$TMUX_BIN" set -g mouse on 2>/dev/null
+        # Configure Settings (Mouse OFF locally)
+        "$TMUX_BIN" set -g mouse off 2>/dev/null
         "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
-        "$TMUX_BIN" bind m set -g mouse 2>/dev/null
         "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
+        
+        # Toggle: F1 (VolUp+1) or Prefix+m
+        "$TMUX_BIN" bind -n F1 set -g mouse 2>/dev/null
+        "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+        
+        # Status Bar
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
         "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
-        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
+        "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #{?mouse,#[fg=green]M:ON,#[fg=red]M:OFF} #[fg=yellow](F1) " 2>/dev/null
     else
         echo -e "${GREEN}[+] Resuming session: ${CYAN}$SESSION_NAME${NC}"
     fi
@@ -388,11 +393,16 @@ cmd_web() {
             # Configure Settings
             "$TMUX_BIN" set -g mouse on 2>/dev/null
             "$TMUX_BIN" set -s set-clipboard on 2>/dev/null
-            "$TMUX_BIN" bind m set -g mouse 2>/dev/null
             "$TMUX_BIN" set -g history-limit 50000 2>/dev/null
+            
+            # Toggle: F1 (VolUp+1) or Prefix+m
+            "$TMUX_BIN" bind -n F1 set -g mouse 2>/dev/null
+            "$TMUX_BIN" bind m set -g mouse 2>/dev/null
+            
+            # Status Bar
             "$TMUX_BIN" set-option -t "$SESSION_NAME" status-style "bg=black,fg=white" 2>/dev/null
             "$TMUX_BIN" set-option -t "$SESSION_NAME" status-left "#[fg=green,bold] TB Session #[default]" 2>/dev/null
-            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #[fg=yellow]Mouse: ^B m " 2>/dev/null
+            "$TMUX_BIN" set-option -t "$SESSION_NAME" status-right "#[fg=cyan]New: ^B c #[fg=red]| #[fg=cyan]Switch: ^B n/p #[fg=red]| #{?mouse,#[fg=green]M:ON,#[fg=red]M:OFF} #[fg=yellow](F1) " 2>/dev/null
         fi
 
         # Run ttyd
