@@ -2,6 +2,10 @@
 
 All notable changes to the **Termux Bootstrap (tb)** project will be documented in this file.
 
+## [v3.0.4] - 2026-01-05
+### Fixed
+- **Escape Hatch:** Changed Status Bar Escape to **Double-Click** to preserve window selection. Fixed binding syntax to ensure it executes correctly.
+
 ## [v3.0.3] - 2026-01-05
 ### Improved
 - **Mouse Escape Hatch:** Tapping the Tmux Status Bar now disables mouse mode (if ON), allowing you to quickly access the Android keyboard.
